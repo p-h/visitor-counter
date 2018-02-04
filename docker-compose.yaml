@@ -1,8 +1,16 @@
 version: '3'
 services:
   web:
-    image: "visitor-counter-visitor-counter"
+    image: "localhost:5000/visitor-counter-visitor-counter"
+    deploy:
+      mode: global
+    environment:
+      - SERVICE_PORT=8888
     ports:
       - "8888:8888"
   redis:
     image: "redis:alpine"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager

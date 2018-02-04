@@ -5,6 +5,6 @@ packages:
 image:
   containers:
     - name: "visitor-counter"
-      base: "fpco/stack-build"
+      base: "fpco/ubuntu-with-libgmp"
       entrypoints:
         - visitor-counter
