@@ -42,4 +42,4 @@ main = do
 
 
 getServicePortFromEnv :: IO Int
-getServicePortFromEnv = fromMaybe 8080 . (readMaybe =<<) <$> lookupEnv "SERVICE_PORT"
+getServicePortFromEnv = fromMaybe 8080 . (readMaybe =<<) <$> lookupEnv "SERVICE_PORTS"

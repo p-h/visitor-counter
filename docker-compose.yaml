@@ -1,11 +1,11 @@
 version: '3'
 services:
-  web:
+  webapp:
     image: "localhost:5000/visitor-counter-visitor-counter"
     deploy:
       mode: global
     environment:
-      - SERVICE_PORT=8888
+      - SERVICE_PORTS=8888
     ports:
       - "8888:8888"
   redis:
@@ -14,3 +14,22 @@ services:
       placement:
         constraints:
           - node.role == manager
+  proxy:
+    image: dockercloud/haproxy
+    depends_on:
+      - webapp
+    environment:
+      - BALANCE=leastconn
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+    networks:
+      - web
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  web:
+    driver: overlay
