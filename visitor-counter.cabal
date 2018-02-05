@@ -19,4 +19,5 @@ executable visitor-counter
                      , text
                      , hostname
                      , scotty
+                     , blaze-html
                      , hedis

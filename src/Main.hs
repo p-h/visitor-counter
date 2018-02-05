@@ -10,6 +10,9 @@ import System.Environment
 import Text.Read hiding (get)
 import Web.Scotty
 
+import qualified Text.Blaze.Html5 as H
+import Text.Blaze.Html.Renderer.Text (renderHtml)
+
 redisConnectInfo :: ConnectInfo
 redisConnectInfo = defaultConnectInfo { connectHost = "redis" }
 
@@ -26,11 +29,17 @@ main = do
     hostName <- getHostName
     scotty port $
         get "/" $ do
-            hits <- liftIO $ getAndIncreaseHits
-            html $ mconcat [ "<h1>Hi there</h1>"
-                           , "<p>You are visitor number: ", pack $ show hits, "!</p>"
-                           , "<p>My name is: ", pack hostName, "</p>"
-                           ]
+            hits <- liftIO $ show <$> getAndIncreaseHits
+            html $ renderHtml
+                $ H.docTypeHtml $ do
+                    H.head $ do
+                        H.title $ mapM_ H.toHtml ["Hello Visitor #", hits, "!"]
+                    H.body $ do
+                        H.h1 "Hi there"
+                        H.p $ mapM_ H.toHtml ["You are visitor number: ", hits, "!"]
+                        H.p $ mapM_ H.toHtml ["My name is: ", hostName]
+
+
 
 getServicePortFromEnv :: IO Int
 getServicePortFromEnv = fromMaybe 8080 . (readMaybe =<<) <$> lookupEnv "SERVICE_PORT"
