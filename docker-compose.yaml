@@ -2,18 +2,21 @@ version: '3'
 services:
   webapp:
     image: "localhost:5000/visitor-counter-visitor-counter"
+    networks:
+      - web
     deploy:
       mode: global
     environment:
       - SERVICE_PORTS=8888
     ports:
-      - "8888:8888"
+      - 8888
   redis:
     image: "redis:alpine"
+    networks:
+      - web
     deploy:
       placement:
-        constraints:
-          - node.role == manager
+        constraints: [node.role == manager]
   proxy:
     image: dockercloud/haproxy
     depends_on:
